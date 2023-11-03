@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import quizCompleteImg from "../assets/quiz-complete.png";
 import QUESTIONS from "../questions.js";
 
 export default function Quiz() {
@@ -7,17 +7,32 @@ export default function Quiz() {
 
   const activeQuestionIndex = userAnswers.length;
 
+  const quizIsComplete = activeQuestionIndex === QUESTIONS.length;
+
   function handleSelectedAnswer(selectedAnswer) {
-    setUserAnswers((prevAnswers) => {
-      return [...prevAnswers, selectedAnswer];
+    setUserAnswers((prevUserAnswers) => {
+      return [...prevUserAnswers, selectedAnswer];
     });
   }
+
+  if (quizIsComplete) {
+    return (
+      <div id="summary">
+        <img src={quizCompleteImg} />
+        <h2>Quiz Complete</h2>
+      </div>
+    );
+  }
+
+  const shuffledAnswers = [...QUESTIONS[activeQuestionIndex].answers];
+  shuffledAnswers.sort(() => Math.random() - 0.5);
+
   return (
     <div id="quiz">
       <div id="question">
         <h2>{QUESTIONS[activeQuestionIndex].text}</h2>
         <ul id="answers">
-          {QUESTIONS[activeQuestionIndex].answers.map((answer) => (
+          {shuffledAnswers.map((answer) => (
             <li key={answer} className="answer">
               <button onClick={() => handleSelectedAnswer(answer)}>
                 {answer}
